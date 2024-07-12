@@ -2,9 +2,7 @@ async function fetchAndDecryptFile(password) {
     const correctPassword = "victorsahquelbg"; 
     if (password === correctPassword) {
         try {
-            const response = await fetch('https://raw.githubusercontent.com/Thxfox-hub/Poesis/main/codehtml.html');
-            const data = await response.text();
-            document.getElementById('content').innerHTML = data;
+            document.getElementById('content').innerHTML = '<a href="https://github.com/Thxfox-hub/Poesis/blob/main/codehtml.html" target="_blank">Accéder au fichier</a>';
         } catch (error) {
             alert('Erreur lors du déchiffrement ou mot de passe incorrect');
         }
