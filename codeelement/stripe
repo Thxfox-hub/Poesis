@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: none;
+        }
+    </style>
+</head>
+<body>
+
+<script async src="https://js.stripe.com/v3/buy-button.js"></script>
+<stripe-buy-button
+  buy-button-id="buy_btn_1P0oVNJqfqbgkui146zLe9y0"
+  publishable-key="pk_live_51OzWKgJqfqbgkui1tcTtxcWTEYimDdAJ3q0dSICjtGIo9iQsGXzHS4wgOtYZxjzLhYi7MD5Sr744TB01OaPIAJxV00rpCS9Nlg">
+</stripe-buy-button>
+
+</body>
+</html>
