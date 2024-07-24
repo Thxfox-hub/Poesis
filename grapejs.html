@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrapeJS E-commerce Example</title>
+    <link href="https://unpkg.com/grapesjs@0.21.7/dist/css/grapes.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/grapesjs-preset-webpage@1.0.2/dist/grapesjs-preset-webpage.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            background-color: #1e1e2f;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        .gjs-editor, .gjs-cv-canvas__frames,
+        .gjs-pn-panels, .gjs-sm-header, .gjs-block-category, .gjs-block, .gjs-blocks-cs, .gjs-block-label,
+        .gjs-pn-views-container, .gjs-pn-panel, .gjs-sm-properties, .gjs-sm-sectors, .gjs-layer,
+        .gjs-block:hover, .gjs-one-bg, .gjs-two-color, .gjs-four-color-h:hover, .gjs-three-bg, 
+        .gjs-block-label, .gjs-block-category-title, .gjs-title, .gjs-pn-btn, .gjs-pn-btn:focus, .gjs-pn-btn:hover,
+        .gjs-sm-sector .gjs-sm-properties .gjs-sm-property .gjs-field .gjs-input-holder input,
+        .gjs-sm-sector .gjs-sm-properties .gjs-sm-property .gjs-field .gjs-input-holder select {
+            background-color: #2b2b3d !important;
+            color: #ffffff !important;
+        }
+        .gjs-two-color, .gjs-four-color-h:hover {
+            color: #5b9bd5 !important;
+        }
+        .gjs-dashed *[data-gjs-type] {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div id="gjs" style="height:100vh; overflow:hidden">
+        <h1>Hello World Component!</h1>
+        <p>This is a simple paragraph for testing.</p>
+    </div>
+
+    <script src="https://unpkg.com/grapesjs@0.21.7"></script>
+    <script src="https://unpkg.com/grapesjs-blocks-basic@1.0.1"></script>
+    <script src="https://unpkg.com/grapesjs-plugin-forms@2.0.5"></script>
+    <script src="https://unpkg.com/grapesjs-component-countdown@1.0.1"></script>
+    <script src="https://unpkg.com/grapesjs-plugin-export@1.0.11"></script>
+    <script src="https://unpkg.com/grapesjs-tabs@1.0.6"></script>
+    <script src="https://unpkg.com/grapesjs-custom-code@1.0.1"></script>
+    <script src="https://unpkg.com/grapesjs-tooltip@0.1.7"></script>
+    <script src="https://unpkg.com/grapesjs-parser-postcss@1.0.1"></script>
+    <script src="https://unpkg.com/grapesjs-tui-image-editor@1.0.1"></script>
+    <script src="https://unpkg.com/grapesjs-typed@1.0.5"></script>
+    <script src="https://unpkg.com/grapesjs-style-bg@2.0.1"></script>
+    <script src="https://unpkg.com/grapesjs-preset-webpage@1.0.2"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const editor = grapesjs.init({
+                container: '#gjs',
+                fromElement: true,
+                height: '100vh',
+                width: 'auto',
+                storageManager: false,
+                plugins: [
+                    'gjs-blocks-basic',
+                    'grapesjs-plugin-forms',
+                    'grapesjs-component-countdown',
+                    'grapesjs-plugin-export',
+                    'grapesjs-tabs',
+                    'grapesjs-custom-code',
+                    'grapesjs-tooltip',
+                    'grapesjs-parser-postcss',
+                    'grapesjs-tui-image-editor',
+                    'grapesjs-typed',
+                    'grapesjs-style-bg',
+                    'grapesjs-preset-webpage'
+                ],
+                pluginsOpts: {
+                    'gjs-blocks-basic': { flexGrid: true },
+                    'grapesjs-tui-image-editor': {
+                        script: [
+                            'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.7/fabric.min.js',
+                            'https://uicdn.toast.com/tui.code-snippet/v1.5.2/tui-code-snippet.min.js',
+                            'https://uicdn.toast.com/tui-color-picker/v2.2.7/tui-color-picker.min.js',
+                            'https://uicdn.toast.com/tui-image-editor/v3.15.2/tui-image-editor.min.js'
+                        ],
+                        style: [
+                            'https://uicdn.toast.com/tui-color-picker/v2.2.7/tui-color-picker.min.css',
+                            'https://uicdn.toast.com/tui-image-editor/v3.15.2/tui-image-editor.min.css',
+                        ],
+                    },
+                    'grapesjs-tabs': {
+                        tabsBlock: { category: 'Extra' }
+                    },
+                    'grapesjs-typed': {
+                        block: {
+                            category: 'Extra',
+                            content: {
+                                type: 'typed',
+                                'type-speed': 40,
+                                strings: [
+                                    'Text row one',
+                                    'Text row two',
+                                    'Text row three',
+                                ],
+                            }
+                        }
+                    },
+                    'grapesjs-preset-webpage': {}
+                },
+            });
+
+            editor.Components.addType('custom-code', {
+                isComponent: el => el.tagName === 'CUSTOM-CODE',
+                model: {
+                    defaults: {
+                        tagName: 'div',
+                        droppable: true,
+                        traits: [
+                            {
+                                type: 'textarea',
+                                name: 'code',
+                                label: 'Code',
+                            },
+                            {
+                                type: 'select',
+                                name: 'align',
+                                label: 'Align',
+                                options: [
+                                    { value: 'left', name: 'Left' },
+                                    { value: 'center', name: 'Center' },
+                                    { value: 'right', name: 'Right' },
+                                ]
+                            },
+                            {
+                                type: 'number',
+                                name: 'zIndex',
+                                label: 'Z-index',
+                            }
+                        ],
+                    },
+                    init() {
+                        this.on('change:code change:align change:zIndex', this.updateContent);
+                    },
+                    updateContent() {
+                        this.view.updateContent();
+                    }
+                },
+                view: {
+                    onRender() {
+                        this.updateContent();
+                    },
+                    updateContent() {
+                        const code = this.model.get('code') || '';
+                        const align = this.model.get('align') || 'left';
+                        const zIndex = this.model.get('zIndex') || 'auto';
+                        this.el.innerHTML = `<div style="text-align: ${align}; z-index: ${zIndex}; position: relative;">${code}</div>`;
+                    }
+                }
+            });
+
+            editor.Components.addType('3d-model-static', {
+                model: {
+                    defaults: {
+                        tagName: 'div',
+                        droppable: false,
+                        traits: [
+                            {
+                                type: 'text',
+                                label: '3D Model URL',
+                                name: 'src',
+                            },
+                            {
+                                type: 'select',
+                                name: 'align',
+                                label: 'Align',
+                                options: [
+                                    { value: 'left', name: 'Left' },
+                                    { value: 'center', name: 'Center' },
+                                    { value: 'right', name: 'Right' },
+                                ]
+                            },
+                            {
+                                type: 'number',
+                                name: 'zIndex',
+                                label: 'Z-index',
+                            }
+                        ],
+                    },
+                },
+                view: {
+                    onRender() {
+                        const modelViewer = document.createElement('model-viewer');
+                        modelViewer.setAttribute('src', this.model.get('src') || '');
+                        modelViewer.setAttribute('style', 'width: 100%; height: 400px;');
+                        
+                        const align = this.model.get('align') || 'left';
+                        const zIndex = this.model.get('zIndex') || 'auto';
+                        const wrapper = document.createElement('div');
+                        wrapper.style.textAlign = align;
+                        wrapper.style.zIndex = zIndex;
+                        wrapper.style.position = 'relative';
+                        
+                        wrapper.appendChild(modelViewer);
+                        this.el.appendChild(wrapper);
+                    }
+                }
+            });
+
+            editor.Components.addType('3d-model-rotate', {
+                model: {
+                    defaults: {
+                        tagName: 'div',
+                        droppable: false,
+                        traits: [
+                            {
+                                type: 'text',
+                                label: '3D Model URL',
+                                name: 'src',
+                            },
+                            {
+                                type: 'select',
+                                name: 'align',
+                                label: 'Align',
+                                options: [
+                                    { value: 'left', name: 'Left' },
+                                    { value: 'center', name: 'Center' },
+                                    { value: 'right', name: 'Right' },
+                                ]
+                            },
+                            {
+                                type: 'number',
+                                name: 'zIndex',
+                                label: 'Z-index',
+                            }
+                        ],
+                    },
+                },
+                view: {
+                    onRender() {
+                        const modelViewer = document.createElement('model-viewer');
+                        modelViewer.setAttribute('src', this.model.get('src') || '');
+                        modelViewer.setAttribute('auto-rotate', '');
+                        modelViewer.setAttribute('style', 'width: 100%; height: 400px;');
+                        
+                        const align = this.model.get('align') || 'left';
+                        const zIndex = this.model.get('zIndex') || 'auto';
+                        const wrapper = document.createElement('div');
+                        wrapper.style.textAlign = align;
+                        wrapper.style.zIndex = zIndex;
+                        wrapper.style.position = 'relative';
+                        
+                        wrapper.appendChild(modelViewer);
+                        this.el.appendChild(wrapper);
+                    }
+                }
+            });
+
+            editor.Components.addType('3d-model-rotate-interact', {
+                model: {
+                    defaults: {
+                        tagName: 'div',
+                        droppable: false,
+                        traits: [
+                            {
+                                type: 'text',
+                                label: '3D Model URL',
+                                name: 'src',
+                            },
+                            {
+                                type: 'select',
+                                name: 'align',
+                                label: 'Align',
+                                options: [
+                                    { value: 'left', name: 'Left' },
+                                    { value: 'center', name: 'Center' },
+                                    { value: 'right', name: 'Right' },
+                                ]
+                            },
+                            {
+                                type: 'number',
+                                name: 'zIndex',
+                                label: 'Z-index',
+                            }
+                        ],
+                    },
+                },
+                view: {
+                    onRender() {
+                        const modelViewer = document.createElement('model-viewer');
+                        modelViewer.setAttribute('src', this.model.get('src') || '');
+                        modelViewer.setAttribute('auto-rotate', '');
+                        modelViewer.setAttribute('camera-controls', '');
+                        modelViewer.setAttribute('style', 'width: 100%; height: 400px;');
+                        
+                        const align = this.model.get('align') || 'left';
+                        const zIndex = this.model.get('zIndex') || 'auto';
+                        const wrapper = document.createElement('div');
+                        wrapper.style.textAlign = align;
+                        wrapper.style.zIndex = zIndex;
+                        wrapper.style.position = 'relative';
+                        
+                        wrapper.appendChild(modelViewer);
+                        this.el.appendChild(wrapper);
+                    }
+                }
+            });
+
+            editor.Components.addType('github-code', {
+                model: {
+                    defaults: {
+                        tagName: 'div',
+                        droppable: false,
+                        traits: [
+                            {
+                                type: 'text',
+                                label: 'GitHub File URL',
+                                name: 'url',
+                            },
+                            {
+                                type: 'select',
+                                name: 'align',
+                                label: 'Align',
+                                options: [
+                                    { value: 'left', name: 'Left' },
+                                    { value: 'center', name: 'Center' },
+                                    { value: 'right', name: 'Right' },
+                                ]
+                            },
+                            {
+                                type: 'number',
+                                name: 'zIndex',
+                                label: 'Z-index',
+                            }
+                        ],
+                    },
+                    init() {
+                        this.on('change:url change:align change:zIndex', this.updateContent);
+                    },
+                    updateContent() {
+                        this.view.updateContent();
+                    }
+                },
+                view: {
+                    onRender() {
+                        this.updateContent();
+                    },
+                    updateContent() {
+                        const url = this.model.get('url');
+                        const align = this.model.get('align') || 'left';
+                        const zIndex = this.model.get('zIndex') || 'auto';
+                        
+                        if (url) {
+                            const rawUrl = url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+                            fetch(rawUrl)
+                                .then(response => response.text())
+                                .then(code => {
+                                    this.el.innerHTML = `<div style="text-align: ${align}; z-index: ${zIndex}; position: relative;"><pre><code>${code}</code></pre></div>`;
+                                })
+                                .catch(err => {
+                                    console.error('Error fetching GitHub code:', err);
+                                    this.el.innerHTML = `<div style="text-align: ${align}; z-index: ${zIndex}; position: relative;">Error loading GitHub code</div>`;
+                                });
+                        }
+                    }
+                }
+            });
+
+            const blockManager = editor.BlockManager;
+
+            const blocks = [
+                { id: '1-column', label: '1 Column', content: '<div class="row"><div class="col-12" data-gjs-droppable="true">1 Column</div></div>', category: 'Basic', class: 'fa fa-columns' },
+                { id: '2-columns', label: '2 Columns', content: '<div class="row"><div class="col-6" data-gjs-droppable="true">Column 1</div><div class="col-6" data-gjs-droppable="true">Column 2</div></div>', category: 'Basic', class: 'fa fa-columns' },
+                { id: '3-columns', label: '3 Columns', content: '<div class="row"><div class="col-4" data-gjs-droppable="true">Column 1</div><div class="col-4" data-gjs-droppable="true">Column 2</div><div class="col-4" data-gjs-droppable="true">Column 3</div></div>', category: 'Basic', class: 'fa fa-columns' },
+                { id: '2-columns-3-7', label: '2 Columns 3/7', content: '<div class="row"><div class="col-3" data-gjs-droppable="true">Column 1</div><div class="col-9" data-gjs-droppable="true">Column 2</div></div>', category: 'Basic', class: 'fa fa-columns' },
+                { id: 'section', label: 'Section', content: '<section><h2>Section</h2></section>', category: 'Basic', class: 'fa fa-square' },
+                { id: 'divider', label: 'Divider', content: '<hr>', category: 'Basic', class: 'fa fa-minus' },
+                { id: 'heading', label: 'Heading', content: '<h1>Heading</h1>', category: 'Basic', class: 'fa fa-header' },
+                { id: 'text', label: 'Text', content: '<p>Insert your text here</p>', category: 'Basic', class: 'fa fa-font' },
+                { id: 'link', label: 'Link', content: '<a href="#">Link</a>', category: 'Basic', class: 'fa fa-link' },
+                { id: 'image', label: 'Image', content: '<img src="https://via.placeholder.com/350x150" alt="Image">', category: 'Basic', class: 'fa fa-picture-o' },
+                { id: 'video', label: 'Video', content: '<video src="path/to/video.mp4" controls></video>', category: 'Basic', class: 'fa fa-video-camera' },
+                { id: 'map', label: 'Map', content: '<iframe src="https://www.google.com/maps/embed" frameborder="0"></iframe>', category: 'Basic', class: 'fa fa-map' },
+                { id: 'quote', label: 'Quote', content: '<blockquote>Quote</blockquote>', category: 'Basic', class: 'fa fa-quote-right' },
+                { id: 'button', label: 'Button', content: '<button class="btn btn-primary">Button</button>', category: 'Basic', class: 'fa fa-square' },
+                { id: 'form', label: 'Form', content: '<form><div class="form-group"><label>Input</label><input type="text" class="form-control"></div><button type="submit" class="btn btn-primary">Submit</button></form>', category: 'Forms', class: 'fa fa-wpforms' },
+                { id: 'navbar', label: 'Navbar', content: '<nav class="navbar navbar-expand-lg navbar-light bg-light"><a class="navbar-brand" href="#">Navbar</a></nav>', category: 'Extra', class: 'fa fa-bars' },
+                { id: 'countdown', label: 'Countdown', content: '<div data-gjs-type="countdown"></div>', category: 'Extra', class: 'fa fa-clock-o' },
+                { id: 'tabs', label: 'Tabs', content: '<div data-gjs-type="tabs"></div>', category: 'Extra', class: 'fa fa-th' },
+                { id: 'tooltip', label: 'Tooltip', content: '<div data-gjs-type="tooltip"></div>', category: 'Extra', class: 'fa fa-comment' },
+                { id: 'typed', label: 'Typed', content: '<div data-gjs-type="typed"></div>', category: 'Extra', class: 'fa fa-font' },
+                { id: 'product', label: 'Product', content: '<div class="card product"><img src="https://via.placeholder.com/150" class="card-img-top" alt="Product Image"><div class="card-body"><h5 class="card-title">Product Name</h5><p class="card-text">Product Description</p><p class="card-text">$99.99</p><a href="#" class="btn btn-primary">Add to Cart</a></div></div>', category: 'E-commerce', class: 'fa fa-shopping-bag' },
+                { id: '3d-model-static', label: '3D Model Static', content: '<div data-gjs-type="3d-model-static"></div>', category: '3D Models', class: 'fa fa-cube' },
+                { id: '3d-model-rotate', label: '3D Model Rotate', content: '<div data-gjs-type="3d-model-rotate"></div>', category: '3D Models', class: 'fa fa-cube' },
+                { id: '3d-model-rotate-interact', label: '3D Model Rotate & Interact', content: '<div data-gjs-type="3d-model-rotate-interact"></div>', category: '3D Models', class: 'fa fa-cube' },
+                { id: 'custom-code', label: 'Custom Code', content: '<custom-code></custom-code>', category: 'Extra', class: 'fa fa-code' },
+                { id: 'github-code', label: 'GitHub Code', content: '<div data-gjs-type="github-code"></div>', category: 'Extra', class: 'fa fa-github' },
+            ];
+
+            blocks.forEach(block => {
+                blockManager.add(block.id, {
+                    label: block.label,
+                    content: block.content,
+                    category: block.category,
+                    attributes: { class: block.class }
+                });
+            });
+
+            console.log('Editor initialized:', editor);
+            console.log('Block Manager:', blockManager);
+        });
+    </script>
+</body>
+</html>
