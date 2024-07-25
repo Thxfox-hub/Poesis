@@ -329,45 +329,20 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get the modal elements
-            var privacyPolicyModal = document.getElementById('privacy-policy-modal');
-            var termsOfServiceModal = document.getElementById('terms-of-service-modal');
+document.addEventListener('DOMContentLoaded', function() {
+    var privacyPolicyLink = document.getElementById('privacy-policy-link');
+    var termsOfServiceLink = document.getElementById('terms-of-service-link');
 
-            // Get the button that opens the modal
-            var privacyPolicyLink = document.getElementById('privacy-policy-link');
-            var termsOfServiceLink = document.getElementById('terms-of-service-link');
+    privacyPolicyLink.onclick = function(e) {
+        e.preventDefault();
+        window.parent.postMessage({type: 'openModal', modalId: 'privacy-policy-modal'}, '*');
+    }
 
-            // Get the <span> elements that close the modal
-            var closePrivacyPolicy = document.getElementById('close-privacy-policy');
-            var closeTermsOfService = document.getElementById('close-terms-of-service');
-
-            // When the user clicks on the link, open the modal
-            privacyPolicyLink.onclick = function() {
-                privacyPolicyModal.style.display = "block";
-            }
-            termsOfServiceLink.onclick = function() {
-                termsOfServiceModal.style.display = "block";
-            }
-
-            // When the user clicks on <span> (x), close the modal
-            closePrivacyPolicy.onclick = function() {
-                privacyPolicyModal.style.display = "none";
-            }
-            closeTermsOfService.onclick = function() {
-                termsOfServiceModal.style.display = "none";
-            }
-
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function(event) {
-                if (event.target == privacyPolicyModal) {
-                    privacyPolicyModal.style.display = "none";
-                }
-                if (event.target == termsOfServiceModal) {
-                    termsOfServiceModal.style.display = "none";
-                }
-            }
-        });
+    termsOfServiceLink.onclick = function(e) {
+        e.preventDefault();
+        window.parent.postMessage({type: 'openModal', modalId: 'terms-of-service-modal'}, '*');
+    }
+});
     </script>
 </body>
 </html>
